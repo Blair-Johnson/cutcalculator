@@ -111,7 +111,7 @@
           <li>Name<input id="notes" class="input" type="text" value="default"></li>
           <li>Ultimate Tensile Strength<input id="uts" class="input" type="number" value="45000" step="100">psi</li>
           <li>Tool Diameter<input id="td" class="input" type="number" value="0.25" step="0.05" min="0">in</li>
-          <li>Number of Teeth<input id="nt" class="input" type="number" value="2" step="1" min="1"></li>
+          <li>Number of Flutes<input id="nt" class="input" type="number" value="2" step="1" min="1"></li>
           <li>Helix Angle<input id="ha" class="input" type="number" value="30" step="5" min="0">deg</li>
           <li>Stick Out<input id="so" class="input" type="number" value="1.25" step=".05" min="0">in</li>
           <li>Tool Youngs Modulus<input id="ym" class="input" type="number" value="600" step="50" min="0">Gpa</li>
@@ -126,7 +126,7 @@
           <li>Name<input id="notes" class="input" type="text" value="default"></li>
           <li>Ultimate Tensile Strength<input id="uts" class="input" type="number" value="310" step="5" min="0">MPa</li>
           <li>Tool Diameter<input id="td" class="input" type="number" value="6.25" step=".05" min="0">mm</li>
-          <li>Number of Teeth<input id="nt" class="input" type="number" value="2" step="1" min="1"></li>
+          <li>Number of Flutes<input id="nt" class="input" type="number" value="2" step="1" min="1"></li>
           <li>Helix Angle<input id="ha" class="input" type="number" value="30" step="5" min="0">deg</li>
           <li>Stick Out<input id="so" class="input" type="number" value="30" step="0.5" min="0">mm</li>
           <li>Tool Youngs Modulus<input id="ym" class="input" type="number" value="600" step="50" min="0">Gpa</li>
@@ -152,6 +152,7 @@
           <li>Power at Tool<input id="pat" class="output" type="number" value="0.04591" readonly>HP</li>
           <li>Power at Motor<input id="pam" class="output" type="number" value="0.04591" readonly>HP</li>
           <li>Tangential Cutting Force<input id="tcf" class="output" type="number" value="1.51511" readonly>lbf</li>
+          <li>Shearing Torque<input id="torque" class="output" type="number" value="0.01578" readonly>ft-lb</li>
           <li>Average Tool Deflection<input id="td" class="output" type="number" value="0.00011" readonly>in</li>
           <li>Peak Instantaneous Cutting Force<input id="picf" class="output" type="number" value="0.012" readonly>lbf</li>
       </ul>
@@ -163,6 +164,7 @@
           <li>Power at Tool<input id="pat" class="output" type="number" value="0.04591" readonly>W</li>
           <li>Power at Motor<input id="pam" class="output" type="number" value="0.04591" readonly>W</li>
           <li>Tangential Cutting Force<input id="tcf" class="output" type="number" value="1.51511" readonly>N</li>
+          <li>Shearing Torque<input id="torque" class="output" type="number" value="0.01578" readonly>Nm</li>
           <li>Average Tool Deflection<input id="td" class="output" type="number" value="0.00011" readonly>mm</li>
           <li>Peak Instantaneous Cutting Force<input id="picf" class="output" type="number" value="0.01" readonly>N</li>
       </ul>
@@ -452,6 +454,7 @@
             var pat = ff * mpc * wf * mrr;
             var pam = pat/pe;
             var tcf = pat * 550 / (cs/60);
+            var torqueFromCuttingForce = td/(2*12)*tcf; // torque in foot lbs derived from tangential cutting force
             //var woverd = woc / td;
             //var efactor = lerp(1.0, 1.1, saturate((woverd - 0.66)/0.34)); // for aluminum...
             //var tcf = uts * doc * fpt * nt * (eangle/360) * efactor * wf;
@@ -464,6 +467,7 @@
             setOutput("pat",pat,2,745.7);
             setOutput("pam",pam,2,745.7);
             setOutput("tcf",tcf,2,4.44822);
+            setOutput("torque",torqueFromCuttingForce,2,1.3558179); // 1ft-lb is 1.3558179 NM
             setOutput("td",def,5,25.4);
             // note one more setOutput, below
 
